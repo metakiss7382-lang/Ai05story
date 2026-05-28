@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抽卡故事挑戰</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+}
+
+header {
+    text-align: center;
+    padding: 15px;
+    font-size: 20px;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px;
+}
+
+/* 卡片 */
+.card {
+    width: 45%;
+    max-width: 160px;
+    aspect-ratio: 16/9;
+    perspective: 1000px;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.front {
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+.back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 工具列 */
+.controls {
+    text-align: center;
+    margin: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background: #ffcc00;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 文字區 */
+textarea {
+    width: 90%;
+    height: 120px;
+    margin: 10px auto;
+    display: block;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* 手機優化 */
+@media (min-width: 768px) {
+    .card {
+        width: 150px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>🎴 抽卡故事挑戰</header>
+
+<div class="controls">
+    <button onclick="drawCards()">🎲 抽5張卡</button>
+    <button onclick="showAll()">👀 顯示全部卡片</button>
+</div>
+
+<div class="container" id="cardContainer"></div>
+
+<textarea placeholder="請在這裡寫你的故事..."></textarea>
+
+<script>
+let selectedCards = [];
+
+function drawCards() {
+    const container = document.getElementById("cardContainer");
+    container.innerHTML = "";
+    selectedCards = [];
+
+    let pool = [];
+    for (let i = 1; i <= 36; i++) {
+        pool.push(i);
+    }
+
+    pool = pool.sort(() => Math.random() - 0.5).slice(0, 5);
+    selectedCards = pool;
+
+    pool.forEach(num => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face front">點擊翻牌</div>
+                <div class="card-face back">
+                    <img src="${String(num).padStart(2,'0')}.jpg">
+                </div>
+            </div>
+        `;
+
+        card.onclick = () => {
+            card.classList.toggle("flipped");
+        };
+
+        container.appendChild(card);
+    });
+}
+
+function showAll() {
+    const container = document.getElementById("cardContainer");
+    container.innerHTML = "";
+
+    for (let i = 1; i <= 36; i++) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face front">卡片 ${i}</div>
+                <div class="card-face back">
+                    <img src="${String(i).padStart(2,'0')}.jpg">
+                </div>
+            </div>
+        `;
+
+        card.onclick = () => {
+            card.classList.toggle("flipped");
+        };
+
+        container.appendChild(card);
+    }
+}
+</script>
+
+</body>
+</html>
